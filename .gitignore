@@ -1,0 +1,5 @@
+rest-server.sdf
+rest-server/packages/
+rest-server/Debug/
+rest-server/rest-server/Debug/
+rest-server/rest-client/Debug/

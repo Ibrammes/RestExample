@@ -10,7 +10,14 @@ MyListener::MyListener(const http::uri& url) : m_listener(http_listener(url))
 
 void MyListener::handle_get(http_request message)
 {
-	message.reply(status_codes::OK, U("Hello, World!"));
+	web::uri req_uri = message.request_uri();
+	utility::string_t req_query = req_uri.query();
+	auto req_split_query = web::uri::split_query(req_query);
+	utility::string_t params;
+	for (auto it = req_split_query.begin(); it != req_split_query.end(); ++it)
+		params += (*it).first + utility::conversions::to_string_t(": ") + (*it).second + utility::conversions::to_string_t("\n");
+	//message.reply(status_codes::OK, U("Hello, World!"));
+	message.reply(status_codes::OK, params);
 }
 
 void MyListener::start()
