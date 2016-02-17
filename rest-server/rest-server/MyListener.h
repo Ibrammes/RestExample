@@ -1,7 +1,7 @@
 #pragma once
 #include <cpprest\http_listener.h>
 
-//using namespace std;
+using namespace std;
 using namespace web;
 using namespace web::http;
 using namespace web::http::experimental::listener;

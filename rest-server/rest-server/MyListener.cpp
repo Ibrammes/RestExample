@@ -14,10 +14,52 @@ void MyListener::handle_get(http_request message)
 	utility::string_t req_query = req_uri.query();
 	auto req_split_query = web::uri::split_query(req_query);
 	utility::string_t params;
+	std::string error;
 	for (auto it = req_split_query.begin(); it != req_split_query.end(); ++it)
-		params += (*it).first + utility::conversions::to_string_t(": ") + (*it).second + utility::conversions::to_string_t("\n");
-	//message.reply(status_codes::OK, U("Hello, World!"));
-	message.reply(status_codes::OK, params);
+	{
+		////params += (*it).first + utility::conversions::to_string_t(": ") + (*it).second + utility::conversions::to_string_t("\n");
+		// ***** Проверка логина *****
+		if (utility::conversions::to_utf8string((*it).first) == "login")
+		{
+			std::string login = utility::conversions::to_utf8string((*it).second);
+			for (auto iter = login.begin(); iter != login.end(); ++iter)
+			{
+				if (!(*iter >= 'a' && *iter <= 'z'))
+					error += "Error in login. Unacceptable symbols\n";
+			}
+		}
+		// ***** Проверка пароля *****
+		if (utility::conversions::to_utf8string((*it).first) == "password")
+		{
+		
+			//wcout << endl << (*it).second << endl;
+			std::string pass = utility::conversions::to_utf8string((*it).second);
+			cout << endl << pass << endl;
+			if (pass.length() < 8)
+				error += "Error in password. Insufficient password length\n";
+			for (auto iter = pass.begin(); iter != pass.end(); ++iter)
+			//for (int i = 0; i < pass.length(); ++i)
+			{
+				//if (!isdigit(*iter) && !isalpha(*iter) && !ispunct(*iter))
+				//if (!(pass[i] >= 'a' && pass[i] <= 'z' || pass[i] >= 'A' && pass[i] <= 'Z') && !isdigit(pass[i]) && !ispunct(pass[i]))
+				if (!(*iter >= 33 && *iter <= 126))
+				{			
+					error += "Error in password. Unacceptable symbols\n";
+				}	
+				//cout << *iter << "   " << error << endl;
+				//cout << pass[i] << "   " << resp << endl;
+			}
+		}
+	}
+	//cout << endl << endl << error << endl << endl;
+	if (error == "")
+		message.reply(status_codes::OK, "OK");
+	else
+		message.reply(status_codes::BadRequest, error);
+	
+		
+
+	////message.reply(status_codes::OK, params);
 }
 
 void MyListener::start()
