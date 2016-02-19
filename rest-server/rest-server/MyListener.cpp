@@ -17,7 +17,7 @@ void MyListener::handle_get(http_request message)
 	std::string error;
 	for (auto it = req_split_query.begin(); it != req_split_query.end(); ++it)
 	{
-		////params += (*it).first + utility::conversions::to_string_t(": ") + (*it).second + utility::conversions::to_string_t("\n");
+		params += (*it).first + utility::conversions::to_string_t(": ") + (*it).second + utility::conversions::to_string_t("\n");
 		// ***** Проверка логина *****
 		if (utility::conversions::to_utf8string((*it).first) == "login")
 		{
@@ -32,33 +32,26 @@ void MyListener::handle_get(http_request message)
 		if (utility::conversions::to_utf8string((*it).first) == "password")
 		{
 		
-			//wcout << endl << (*it).second << endl;
 			std::string pass = utility::conversions::to_utf8string((*it).second);
 			cout << endl << pass << endl;
 			if (pass.length() < 8)
 				error += "Error in password. Insufficient password length\n";
 			for (auto iter = pass.begin(); iter != pass.end(); ++iter)
-			//for (int i = 0; i < pass.length(); ++i)
 			{
 				//if (!isdigit(*iter) && !isalpha(*iter) && !ispunct(*iter))
-				//if (!(pass[i] >= 'a' && pass[i] <= 'z' || pass[i] >= 'A' && pass[i] <= 'Z') && !isdigit(pass[i]) && !ispunct(pass[i]))
 				if (!(*iter >= 33 && *iter <= 126))
 				{			
 					error += "Error in password. Unacceptable symbols\n";
 				}	
-				//cout << *iter << "   " << error << endl;
-				//cout << pass[i] << "   " << resp << endl;
 			}
 		}
 	}
-	//cout << endl << endl << error << endl << endl;
 	if (error == "")
-		message.reply(status_codes::OK, "OK");
+		message.reply(status_codes::OK, "OK\n" + utility::conversions::to_utf8string(params));
 	else
-		message.reply(status_codes::BadRequest, error);
+		message.reply(status_codes::BadRequest, error + '\n' + utility::conversions::to_utf8string(params));
 	
 		
-
 	////message.reply(status_codes::OK, params);
 }
 
